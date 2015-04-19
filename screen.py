@@ -15,6 +15,7 @@ class Screen(object):
         self.put(g, (x, y), color)
 
   def flush(self, socket):
+    if not self._updated: return
     data = []
     current_color = None
     for y in self._updated:
