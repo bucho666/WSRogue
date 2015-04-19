@@ -1,36 +1,7 @@
 # -*- coding: utf-8 -*-
 from screen import Screen
-
-class Map(object):
-  def __init__(self):
-    self._character = dict()
-
-  def render(self, screen):
-    screen.fill('.')
-    for coord, character in self._character.items():
-      character.render(screen, coord)
-
-  def put_character(self, character, pos):
-    self._character[pos] = character
-
-  def move_character(self, character, direction):
-    (x, y) = self.coordinate_of_character(character)
-    (dx, dy) = direction
-    del self._character[(x, y)]
-    self._character[(x + dx, y + dy)] = character
-
-  def coordinate_of_character(self, target):
-    for coord, character in self._character.items():
-      if target == character: return coord
-    return None
-
-class Character(object):
-  def __init__(self, glyph, color):
-    self._glyph = glyph
-    self._color = color
-
-  def render(self, screen, coordinate):
-    screen.put(self._glyph, coordinate, self._color)
+from game import Map
+from game import Character
 
 class Handler(object):
   _handlers = dict()
@@ -46,13 +17,12 @@ class Handler(object):
       handler.render()
 
   def __init__(self, socket):
-    self._character = Character('@', 'olive')
     self._socket = socket
-    self._map.put_character(self._character, (0, 0))
     self._screen = Screen((80, 21))
+    self._character = Character('@', 'olive')
+    self._map.put_character(self._character, (0, 0))
 
   def enter(self):
-    self._screen = Screen((80, 21))
     self._screen.flush(self._socket)
     self._handlers[self._socket] = self
 
