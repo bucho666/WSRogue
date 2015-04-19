@@ -40,6 +40,11 @@ class Handler(object):
   def of(cls, socket):
     return cls._handlers[socket]
 
+  @classmethod
+  def render_all(cls):
+    for handler in cls._handlers.values():
+      handler.render()
+
   def __init__(self, socket):
     self._character = Character('@', 'olive')
     self._socket = socket
@@ -60,5 +65,8 @@ class Handler(object):
     if key == 'h': self._map.move_character(self._character, (-1,  0))
     if key == 'j': self._map.move_character(self._character, ( 0,  1))
     if key == 'k': self._map.move_character(self._character, ( 0, -1))
+    self.render_all()
+
+  def render(self):
     self._map.render(self._screen)
     self._screen.flush(self._socket)
