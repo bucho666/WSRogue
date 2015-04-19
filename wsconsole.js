@@ -30,8 +30,12 @@ function ConsoleScreen(height, id) {
       this._accept(commands[i]);
     }
   }
+}
 
-  this._accept = function(command) {
+function MapScreen(height, id) {
+  var that = new ConsoleScreen(height, id);
+
+  that._accept = function(command) {
     if (command === 'flip') {
       this.flip();
     } else {
@@ -39,11 +43,26 @@ function ConsoleScreen(height, id) {
     }
   }
 
-  this._update_line = function(command) {
+  that._update_line = function(command) {
     var match, line, message;
     match = command.match(/^(\d+):(.*)/);
     line = match[1];
     message = match[2];
     this.write(line, message);
   }
+
+  return that;
+}
+
+function MessageScreen(height, id) {
+  var that = new ConsoleScreen(height, id);
+
+  that.add = function(message) {
+    this.backBuffer.removeChild(this.backBuffer.firstChild);
+    var line = document.createElement('div');
+    line.innerHTML = message;
+    this.backBuffer.appendChild(line);
+  }
+
+  return that;
 }

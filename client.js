@@ -1,5 +1,5 @@
-var cscreen = new ConsoleScreen(12, 'map_screen');
-var messages = new ConsoleScreen(4, 'message_screen');
+var messages = new MessageScreen(4, 'message_screen');
+var cscreen = new MapScreen(12, 'map_screen');
 
 document.bgColor = 'black';
 document.fgColor = 'silver';
@@ -16,7 +16,7 @@ try {
   // メッセージ受信処理
   s.onmessage = function (e) {
     cscreen.receve(e.data);
-    messages.write(0, 'test:' + e.data);
+    messages.add('test:' + e.data);
     messages.flip();
   };
   // 接続エラー処理
