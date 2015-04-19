@@ -1,3 +1,12 @@
+var split_command = function(command) {
+  var match, type, message;
+  match = command.match(/^(\d+):(.*)/);
+  return {
+    type   : match[1],
+    message: match[2]
+  };
+}
+
 var messages = new MessageScreen(4, 'message_screen');
 var cscreen = new MapScreen(12, 'map_screen');
 

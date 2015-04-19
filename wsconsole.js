@@ -1,7 +1,7 @@
 // console screen class
 function Screen(height, id) {
   Screen.prototype.write = function(line, message) {
-    lines = this.backBuffer.getElementsByTagName('div');
+    var lines = this.backBuffer.getElementsByTagName('div');
     lines[line].innerHTML = message;
   };
 
@@ -41,11 +41,8 @@ function MapScreen(height, id) {
   var that = new Screen(height, id);
 
   that._accept = function(command) {
-    var match, line, message;
-    match = command.match(/^(\d+):(.*)/);
-    line = match[1];
-    message = match[2];
-    this.write(line, message);
+    var update = split_command(command);
+    this.write(update.type, update.message);
   }
 
   return that;
