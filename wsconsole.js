@@ -1,7 +1,8 @@
 // console screen class
-function ConsoleScreen(height) {
+function ConsoleScreen(height, id) {
   var screen = document.createElement('div');
-  screen.id = 'screen'
+  this._id = id;
+  screen.id = this._id;
   document.body.appendChild(screen);
   for (var i = 0; i < height; i++) {
     var line = document.createElement('div');
@@ -16,7 +17,7 @@ function ConsoleScreen(height) {
   };
 
   this.flip = function() {
-    var front = document.getElementById('screen');
+    var front = document.getElementById(this._id);
     document.body.replaceChild(this.backBuffer, front);
     this.backBuffer = this.backBuffer.cloneNode(true);
   };

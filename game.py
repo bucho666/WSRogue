@@ -30,8 +30,8 @@ class Map(object):
 
   def random_open_coordinate(self):
     opens = []
-    for y in range(20):
-      for x in range(80):
+    for y in range(12):
+      for x in range(32):
         if self.is_open((x, y)): opens.append((x, y))
     return random.choice(opens)
 

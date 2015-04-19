@@ -18,7 +18,7 @@ class Handler(object):
 
   def __init__(self, socket):
     self._socket = socket
-    self._screen = Screen((80, 21))
+    self._screen = Screen((32, 12))
     self._character = Character('@', 'olive')
     self._map.put_character(self._character, self._map.random_open_coordinate())
 

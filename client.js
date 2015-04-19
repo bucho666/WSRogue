@@ -1,4 +1,5 @@
-cscreen = new ConsoleScreen(22);
+var cscreen = new ConsoleScreen(12, 'map_screen');
+var messages = new ConsoleScreen(4, 'message_screen');
 
 document.bgColor = 'black';
 document.fgColor = 'silver';
@@ -8,22 +9,20 @@ try {
   var s = new WebSocket(host);
   // 接続開始処理
   s.onopen = function (e) {
-    cscreen.write(21, '<font color="green">connected</font>');
-    cscreen.flip()
   };
   // 切断処理
   s.onclose = function (e) {
-    cscreen.write(21, '<font color="red">disconnect</font>');
-    cscreen.flip()
   };
   // メッセージ受信処理
   s.onmessage = function (e) {
     cscreen.receve(e.data);
+    messages.write(0, 'test:' + e.data);
+    messages.flip();
   };
   // 接続エラー処理
   s.onerror = function (e) {
-    cscreen.write(21, 'error');
-    cscreen.flip()
+    //cscreen.write(21, 'error');
+    //cscreen.flip()
   };
   // 入力処理
   document.onkeypress= function (e) {
@@ -31,8 +30,8 @@ try {
   };
 } catch (ex) {
   // 例外処理
-  cscreen.write(21, 'exception');
-  cscreen.flip()
+  //cscreen.write(21, 'exception');
+  //cscreen.flip()
 }
 
 
