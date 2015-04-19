@@ -7,12 +7,22 @@ class Map(object):
 
   def render(self, screen):
     screen.fill('.')
+    for coord, character in self._character.items():
+      character.render(screen, coord)
 
   def put_character(self, character, pos):
     self._character[pos] = character
 
   def move_character(self, character, direction):
-    pass
+    (x, y) = self.coordinate_of_character(character)
+    (dx, dy) = direction
+    del self._character[(x, y)]
+    self._character[(x + dx, y + dy)] = character
+
+  def coordinate_of_character(self, target):
+    for coord, character in self._character.items():
+      if target == character: return coord
+    return None
 
 class Character(object):
   def __init__(self, glyph, color):
@@ -33,7 +43,7 @@ class Handler(object):
   def __init__(self, socket):
     self._character = Character('@', 'olive')
     self._socket = socket
-    self._x, self._y = (0, 0)
+    self._map.put_character(self._character, (0, 0))
     self._screen = Screen((80, 21))
 
   def enter(self):
@@ -46,10 +56,9 @@ class Handler(object):
 
   def receve(self, data):
     key = chr(int(data))
-    if key == 'l': self._x += 1
-    if key == 'h': self._x -= 1
-    if key == 'j': self._y += 1
-    if key == 'k': self._y -= 1
+    if key == 'l': self._map.move_character(self._character, ( 1,  0))
+    if key == 'h': self._map.move_character(self._character, (-1,  0))
+    if key == 'j': self._map.move_character(self._character, ( 0,  1))
+    if key == 'k': self._map.move_character(self._character, ( 0, -1))
     self._map.render(self._screen)
-    self._character.render(self._screen, (self._x, self._y))
     self._screen.flush(self._socket)
