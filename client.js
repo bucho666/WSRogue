@@ -9,20 +9,20 @@ try {
   var s = new WebSocket(host);
   // 接続開始処理
   s.onopen = function (e) {
+    messages.add('<font color="green">connected</font>');
   };
   // 切断処理
   s.onclose = function (e) {
+    messages.add('<font color="red">disconnected</font>');
   };
   // メッセージ受信処理
   s.onmessage = function (e) {
     cscreen.receve(e.data);
     messages.add('test:' + e.data);
-    messages.flip();
   };
   // 接続エラー処理
   s.onerror = function (e) {
-    //cscreen.write(21, 'error');
-    //cscreen.flip()
+    message.add('error');
   };
   // 入力処理
   document.onkeypress= function (e) {
@@ -30,8 +30,7 @@ try {
   };
 } catch (ex) {
   // 例外処理
-  //cscreen.write(21, 'exception');
-  //cscreen.flip()
+  message.add('exception');
 }
 
 

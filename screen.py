@@ -28,7 +28,6 @@ class Screen(object):
           current_color = color
       line += '</font>'
       data.append(line)
-    data.append('flip')
     socket.send('\x00'.join(data))
     self._updated.clear()
 

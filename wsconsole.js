@@ -29,6 +29,7 @@ function ConsoleScreen(height, id) {
     for (i=0;i < length; i++) {
       this._accept(commands[i]);
     }
+    this.flip();
   }
 }
 
@@ -36,14 +37,6 @@ function MapScreen(height, id) {
   var that = new ConsoleScreen(height, id);
 
   that._accept = function(command) {
-    if (command === 'flip') {
-      this.flip();
-    } else {
-      this._update_line(command);
-    }
-  }
-
-  that._update_line = function(command) {
     var match, line, message;
     match = command.match(/^(\d+):(.*)/);
     line = match[1];
@@ -62,6 +55,7 @@ function MessageScreen(height, id) {
     var line = document.createElement('div');
     line.innerHTML = message;
     this.backBuffer.appendChild(line);
+    this.flip();
   }
 
   return that;
