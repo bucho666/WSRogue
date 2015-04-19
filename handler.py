@@ -20,7 +20,7 @@ class Handler(object):
     self._socket = socket
     self._screen = Screen((80, 21))
     self._character = Character('@', 'olive')
-    self._map.put_character(self._character, (0, 0))
+    self._map.put_character(self._character, self._map.random_open_coordinate())
 
   def enter(self):
     self._screen.flush(self._socket)
