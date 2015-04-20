@@ -11,14 +11,9 @@ function Screen(height, id) {
     this.backBuffer = this.backBuffer.cloneNode(true);
   };
 
+  // TODO リファクタリング
   Screen.prototype.receve = function(data) {
-    var commands, i, length;
-    commands = data.split('\x00');
-    length = commands.length;
-    for (i=0;i < length; i++) {
-      this._accept(commands[i]);
-    }
-    this.flip();
+    this._accept(data);
   }
 
   Screen.prototype._create_div = function(text) {

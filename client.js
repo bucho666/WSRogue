@@ -1,6 +1,6 @@
 var split_command = function(command) {
   var match, type, message;
-  match = command.match(/^(\d+):(.*)/);
+  match = command.match(/^(\w+):(.*)/);
   return {
     type   : match[1],
     message: match[2]
@@ -26,8 +26,16 @@ try {
   };
   // メッセージ受信処理
   s.onmessage = function (e) {
-    cscreen.receve(e.data);
-    messages.add('test:' + e.data);
+    var commands, i, length, line, command;
+    commands = e.data.split('\x00');
+    length = commands.length;
+    for (i = 0; i < length; i++) {
+      // TODO リファクタリング
+      command = split_command(commands[i]);
+      cscreen.receve(command.message);
+      messages.add('test:' + command.type + command.message);
+    }
+    cscreen.flip();
   };
   // 接続エラー処理
   s.onerror = function (e) {
@@ -41,5 +49,3 @@ try {
   // 例外処理
   message.add('exception');
 }
-
-
