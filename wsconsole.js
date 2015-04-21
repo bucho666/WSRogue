@@ -1,3 +1,5 @@
+"use strict";
+
 // console screen class
 function Screen(height, id) {
   Screen.prototype.write = function(line, message) {
@@ -10,11 +12,6 @@ function Screen(height, id) {
     document.body.replaceChild(this.backBuffer, front);
     this.backBuffer = this.backBuffer.cloneNode(true);
   };
-
-  // TODO リファクタリング
-  Screen.prototype.receve = function(data) {
-    this._accept(data);
-  }
 
   Screen.prototype._create_div = function(text) {
     var div = document.createElement('div');
@@ -35,8 +32,8 @@ function Screen(height, id) {
 function MapScreen(height, id) {
   var that = new Screen(height, id);
 
-  that._accept = function(command) {
-    var update = split_command(command);
+  that.receve = function(command) {
+    var update = split_header(command);
     this.write(update.type, update.message);
   }
 

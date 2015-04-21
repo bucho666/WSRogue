@@ -1,4 +1,4 @@
-var split_command = function(command) {
+var split_header = function(command) {
   var match, type, message;
   match = command.match(/^(\w+):(.*)/);
   return {
@@ -31,7 +31,7 @@ try {
     length = commands.length;
     for (i = 0; i < length; i++) {
       // TODO リファクタリング
-      command = split_command(commands[i]);
+      command = split_header(commands[i]);
       cscreen.receve(command.message);
       messages.add('test:' + command.type + command.message);
     }
