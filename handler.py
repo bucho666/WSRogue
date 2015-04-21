@@ -25,6 +25,7 @@ class Handler(object):
   def enter(self):
     self._screen.flush(self._socket)
     self._handlers[self._socket] = self
+    self.render_all()
 
   def leave(self):
     del self._handlers[self._socket]
@@ -35,6 +36,10 @@ class Handler(object):
     if key == 'h': self._map.move_character(self._character, (-1,  0))
     if key == 'j': self._map.move_character(self._character, ( 0,  1))
     if key == 'k': self._map.move_character(self._character, ( 0, -1))
+    # TODO DEBUG
+    pos = self._map.coordinate_of_character(self._character)
+    self._socket.send('messageScreen:%s' % str(pos))
+    # TODO DEBUG
     self.render_all()
 
   def render(self):

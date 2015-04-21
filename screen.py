@@ -19,7 +19,7 @@ class Screen(object):
     data = []
     current_color = None
     for y in self._updated:
-      line = 'map:%d:<font color="silver">' % y
+      line = 'mapScreen:%d:<font color="silver">' % y
       for ch, color in self._grid[y]:
         if color == current_color:
           line += ch

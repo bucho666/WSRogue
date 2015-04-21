@@ -33,7 +33,7 @@ function MapScreen(height, id) {
   var that = new Screen(height, id);
 
   that.receve = function(command) {
-    var update = split_header(command);
+    var update = splitHeader(command);
     this.write(update.type, update.message);
   }
 
@@ -48,6 +48,8 @@ function MessageScreen(height, id) {
     this.backBuffer.appendChild(this._create_div(message));
     this.flip();
   }
+
+  that.receve = that.add;
 
   return that;
 }
