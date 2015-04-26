@@ -31,16 +31,16 @@ class Handler(object):
     del self._handlers[self._socket]
 
   def receve(self, data):
-    key = chr(int(data))
-    if key == 'l': self._map.move_character(self._character, ( 1,  0))
-    if key == 'h': self._map.move_character(self._character, (-1,  0))
-    if key == 'j': self._map.move_character(self._character, ( 0,  1))
-    if key == 'k': self._map.move_character(self._character, ( 0, -1))
-    # TODO DEBUG
-    pos = self._map.coordinate_of_character(self._character)
-    self._socket.send('messageScreen:%s' % str(pos))
-    # TODO DEBUG
-    self.render_all()
+    header, command = data.split(':', 1)
+    if header == 'k':
+      key = chr(int(command))
+      if key == 'l': self._map.move_character(self._character, ( 1,  0))
+      if key == 'h': self._map.move_character(self._character, (-1,  0))
+      if key == 'j': self._map.move_character(self._character, ( 0,  1))
+      if key == 'k': self._map.move_character(self._character, ( 0, -1))
+      self.render_all()
+    else:
+      self._socket.send('messageScreen:%s' % command)
 
   def render(self):
     self._map.render(self._screen)

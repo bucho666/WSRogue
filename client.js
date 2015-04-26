@@ -9,14 +9,14 @@ var splitHeader = function(command) {
 
 var SendMessageBox = function (socket, width) {
   var inputBox = document.createElement('input');
-  inputBox.id = 'input';
+  inputBox.id = 'sendMessageBox'
   inputBox.style.backgroundColor = 'black';
   inputBox.style.color = 'silver';
   inputBox.style.width = width;
   inputBox.onkeydown = function (e) {
     if (e.keyIdentifier !== 'Enter') return true;
-    var inputBox = document.getElementById('input');
-    console.log(inputBox.value);
+    var inputBox = document.getElementById('sendMessageBox');
+    socket.send('l:' + inputBox.value);
     inputBox.value = "";
     document.activeElement.blur();
   }
@@ -60,7 +60,7 @@ var Client = function () {
     // 入力処理
     document.onkeypress= function (e) {
       if (document.activeElement !== document.body) return;
-      s.send(e.charCode);
+      s.send('k:' + e.charCode);
     };
   } catch (ex) {
     // 例外処理
