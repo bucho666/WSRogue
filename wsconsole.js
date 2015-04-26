@@ -2,23 +2,6 @@
 
 // console screen class
 function Screen(height, id) {
-  Screen.prototype.write = function(line, message) {
-    var lines = this.backBuffer.getElementsByTagName('div');
-    lines[line].innerHTML = message;
-  };
-
-  Screen.prototype.flip = function() {
-    var front = document.getElementById(this._id);
-    document.body.replaceChild(this.backBuffer, front);
-    this.backBuffer = this.backBuffer.cloneNode(true);
-  };
-
-  Screen.prototype._create_div = function(text) {
-    var div = document.createElement('div');
-    div.innerHTML = text;
-    return div;
-  }
-
   var screen = document.createElement('div');
   this._id = id;
   screen.id = this._id;
@@ -27,6 +10,23 @@ function Screen(height, id) {
     screen.appendChild(this._create_div('<br>'));
   }
   this.backBuffer = screen.cloneNode(true);
+}
+
+Screen.prototype.write = function(line, message) {
+  var lines = this.backBuffer.getElementsByTagName('div');
+  lines[line].innerHTML = message;
+};
+
+Screen.prototype.flip = function() {
+  var front = document.getElementById(this._id);
+  document.body.replaceChild(this.backBuffer, front);
+  this.backBuffer = this.backBuffer.cloneNode(true);
+};
+
+Screen.prototype._create_div = function(text) {
+  var div = document.createElement('div');
+  div.innerHTML = text;
+  return div;
 }
 
 function MapScreen(height, id) {

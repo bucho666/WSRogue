@@ -7,6 +7,22 @@ var splitHeader = function(command) {
   };
 }
 
+var SendMessageBox = function (socket, width) {
+  var inputBox = document.createElement('input');
+  inputBox.id = 'input';
+  inputBox.style.backgroundColor = 'black';
+  inputBox.style.color = 'silver';
+  inputBox.style.width = width;
+  inputBox.onkeydown = function (e) {
+    if (e.keyIdentifier !== 'Enter') return true;
+    var inputBox = document.getElementById('input');
+    console.log(inputBox.value);
+    inputBox.value = "";
+    document.activeElement.blur();
+  }
+  document.body.appendChild(inputBox);
+}
+
 var Client = function () {
   document.bgColor = 'black';
   document.fgColor = 'silver';
@@ -17,22 +33,7 @@ var Client = function () {
     var s = new WebSocket(host);
     s.messageScreen = new MessageScreen(4, 'message_screen');
     s.mapScreen = new MapScreen(12, 'map_screen');
-    var inputBox = document.createElement('input');
-    inputBox.id = 'input';
-    inputBox.style.backgroundColor = 'black';
-    inputBox.style.color = 'silver';
-    inputBox.style.width = '300px';
-    document.body.appendChild(inputBox);
-
-    inputBox.onkeydown = function (e) {
-      if (e.keyIdentifier !== 'Enter') return true;
-      var inputBox = document.getElementById('input');
-      console.log(inputBox.value);
-      inputBox.value = "";
-      document.activeElement.blur();
-    }
-
-
+    SendMessageBox(s, '300px');
     // 接続開始処理
     s.onopen = function (e) {
       this.messageScreen.add('<font color="green">connected</font>');
