@@ -13,9 +13,26 @@ var Client = function () {
   document.body.style.fontFamily = 'Courier New';
   try {
     var host = "ws://localhost:7003/";
+    var inputBox;
     var s = new WebSocket(host);
     s.messageScreen = new MessageScreen(4, 'message_screen');
     s.mapScreen = new MapScreen(12, 'map_screen');
+    var inputBox = document.createElement('input');
+    inputBox.id = 'input';
+    inputBox.style.backgroundColor = 'black';
+    inputBox.style.color = 'silver';
+    inputBox.style.width = '300px';
+    document.body.appendChild(inputBox);
+
+    inputBox.onkeydown = function (e) {
+      if (e.keyIdentifier !== 'Enter') return true;
+      var inputBox = document.getElementById('input');
+      console.log(inputBox.value);
+      inputBox.value = "";
+      document.activeElement.blur();
+    }
+
+
     // 接続開始処理
     s.onopen = function (e) {
       this.messageScreen.add('<font color="green">connected</font>');
@@ -41,11 +58,12 @@ var Client = function () {
     };
     // 入力処理
     document.onkeypress= function (e) {
-      s.send(e.charCode)
+      if (document.activeElement !== document.body) return;
+      s.send(e.charCode);
     };
   } catch (ex) {
     // 例外処理
-    messageScreen.add('exception');
+    console.log('exception: ' + ex);
   }
 }
 
