@@ -4,7 +4,8 @@ from handler import Handler
 
 class Service(object):
   def enter(self, socket):
-    Handler(socket).enter()
+    # Handler(socket).enter()
+    Handler.attach(socket)
 
   def leave(self, socket):
     Handler.of(socket).leave()

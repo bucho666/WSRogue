@@ -36,10 +36,10 @@ class Map(object):
     return random.choice(opens)
 
 class Character(object):
-  def __init__(self, glyph, color):
+  def __init__(self, glyph, color, name='player'):
     self._glyph = glyph
     self._color = color
-    self._name = 'player'
+    self._name = name
 
   def render(self, screen, coordinate):
     screen.put(self._glyph, coordinate, self._color)
