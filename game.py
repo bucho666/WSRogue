@@ -39,6 +39,10 @@ class Character(object):
   def __init__(self, glyph, color):
     self._glyph = glyph
     self._color = color
+    self._name = 'player'
 
   def render(self, screen, coordinate):
     screen.put(self._glyph, coordinate, self._color)
+
+  def name(self):
+    return self._name

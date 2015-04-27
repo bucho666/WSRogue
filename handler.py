@@ -57,8 +57,9 @@ class Handler(object):
     if key == 'k': self._map.move_character(self._character, ( 0, -1))
 
   def receve_command(self, command):
+    message = '%s: %s' % (self._character.name(), command)
     for handler in self._handlers.values():
-      handler.send_message(command)
+      handler.send_message(message)
 
   def send_message(self, message):
     self._messages.add(message)
