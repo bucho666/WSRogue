@@ -20,6 +20,9 @@ class Map(object):
   def put_character(self, character, pos):
     self._character[pos] = character
 
+  def put_terrain(self, terrain, (x, y)):
+    self._cell[y][x] = terrain
+
   def move_character(self, character, direction):
     (x, y) = self.coordinate_of_character(character)
     (dx, dy) = direction
@@ -38,10 +41,14 @@ class Map(object):
 
   def random_open_coordinate(self):
     opens = []
-    for y in range(12):
-      for x in range(32):
+    w, h = self.size()
+    for y in range(w):
+      for x in range(h):
         if self.is_open((x, y)): opens.append((x, y))
     return random.choice(opens)
+
+  def size(self):
+    return len(self._cell[0]), len(self._cell)
 
 class Character(Entity):
   def __init__(self, glyph, color, name='player'):
@@ -50,3 +57,22 @@ class Character(Entity):
 class Terrain(Character):
   def __init__(self, glyph, color, name='地形'):
     Entity.__init__(self, glyph, color, name)
+
+class MapFile(object):
+  _terrain = {
+    '.': Terrain('.', 'silver', '床'),
+    '#': Terrain('#', 'silver', '壁'),
+    'T': Terrain('T', 'green',  '木'),
+    '~': Terrain('~', 'blue' ,  '湖'),
+    '=': Terrain('=', 'olive' , '橋'),
+  }
+
+  @classmethod
+  def load(cls, f):
+    symbol_map = [line.rstrip() for line in f]
+    (h, w) = len(symbol_map), len(symbol_map[0])
+    m = Map((w, h))
+    for y in range(h):
+      for x, s in enumerate(symbol_map[y]):
+        m.put_terrain(cls._terrain[s], (x, y))
+    return m

@@ -2,6 +2,8 @@
 from screen import Screen
 from game import Map
 from game import Character
+from game import Terrain
+from game import MapFile
 
 class Messages(object):
   def __init__(self):
@@ -17,7 +19,7 @@ class Messages(object):
 
 class Handler(object):
   _handlers = dict()
-  _map = Map((80, 20))
+  _map = MapFile.load(open('map.dat', 'r'))
 
   @classmethod
   def of(cls, socket):
