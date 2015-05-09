@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 import random
+
 class Map(object):
-  def __init__(self):
+  def __init__(self, (w, h)):
     self._character = dict()
+    self._cell = [[Terrain('.', 'silver') for x in range(w)] for y in range(h)]
 
   def render(self, screen):
-    screen.fill('.')
+    for y in range(len(self._cell)):
+      for x, cell in enumerate(self._cell[y]):
+        try:
+          cell.render(screen, (x, y))
+        except IndexError:
+          pass
     for coord, character in self._character.items():
       character.render(screen, coord)
 
@@ -46,3 +53,7 @@ class Character(object):
 
   def name(self):
     return self._name
+
+class Terrain(Character):
+  def __init__(self, glyph, color, name='地形'):
+    Character.__init__(self, glyph, color, name)

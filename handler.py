@@ -17,7 +17,7 @@ class Messages(object):
 
 class Handler(object):
   _handlers = dict()
-  _map = Map()
+  _map = Map((80, 20))
 
   @classmethod
   def of(cls, socket):
