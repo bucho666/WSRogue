@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
+from entity import Entity
 
 class Map(object):
   def __init__(self, (w, h)):
@@ -42,18 +43,10 @@ class Map(object):
         if self.is_open((x, y)): opens.append((x, y))
     return random.choice(opens)
 
-class Character(object):
+class Character(Entity):
   def __init__(self, glyph, color, name='player'):
-    self._glyph = glyph
-    self._color = color
-    self._name = name
-
-  def render(self, screen, coordinate):
-    screen.put(self._glyph, coordinate, self._color)
-
-  def name(self):
-    return self._name
+    Entity.__init__(self, glyph, color, name)
 
 class Terrain(Character):
   def __init__(self, glyph, color, name='地形'):
-    Character.__init__(self, glyph, color, name)
+    Entity.__init__(self, glyph, color, name)
