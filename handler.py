@@ -2,18 +2,7 @@
 from screen import Screen
 from game import Character
 from game import MapFile
-
-class Messages(object):
-  def __init__(self):
-    self._messages = []
-
-  def add(self, message):
-    self._messages.append(message)
-
-  def flush(self, socket):
-    for message in self._messages:
-      socket.send('messageScreen:%s' % message)
-    self._messages = []
+from game import View
 
 class Handler(object):
   _handlers = dict()
@@ -38,6 +27,7 @@ class Handler(object):
     self._messages = Messages()
     self._character = character
     self._map.put_character(self._character, self._map.random_open_coordinate())
+    self._view = View(character, self._map)
 
   def enter(self):
     self._handlers[self._socket] = self
@@ -69,7 +59,7 @@ class Handler(object):
     self._messages.add(message)
 
   def render(self):
-    self._map.render(self._screen)
+    self._view.render(self._screen)
     self._screen.flush(self._socket)
     self._messages.flush(self._socket)
 
@@ -93,3 +83,18 @@ class InputNameHandler(Handler):
 
   def render(self):
     self._messages.flush(self._socket)
+
+class Messages(object):
+  def __init__(self):
+    self._messages = []
+
+  def add(self, message):
+    self._messages.append(message)
+
+  def flush(self, socket):
+    for message in self._messages:
+      socket.send('messageScreen:%s' % message)
+    self._messages = []
+
+
+

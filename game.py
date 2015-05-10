@@ -2,6 +2,14 @@
 import random
 from entity import Entity
 
+class View(object):
+  def __init__(self, character, on_map):
+    self._character = character
+    self._map = on_map
+
+  def render(self, screen):
+    self._map.render(screen)
+
 class Map(object):
   def __init__(self, (w, h)):
     self._character = dict()
