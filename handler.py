@@ -107,11 +107,51 @@ class InputNameHandler(Handler):
     pass
 
   def receve_command(self, command):
-    c = Character('@', 'olive', command)
+    name = Name(command)
+    if name.is_too_long():
+      self.send_message('<font color="red">名前は%dbyte以内です。</font>' % Name.max_length())
+      return
+    if name.is_too_short():
+      self.send_message('<font color="red">名前は%dbyte以上です。</font>'% Name.min_length())
+      return
+    if name.using_invalid_character():
+      self.send_message('<font color="red">名前に記号や空白は使用できません。</font>')
+      return False
+    c = Character('@', 'olive', name)
     GameHandler(self._socket, c).enter()
 
   def render(self):
     self._messages.flush(self._socket)
+
+class Name(object):
+  _INVALID_NAME_CHARACTER = u' 　!"#$%&\'()-=^~\\|@`[{;+:*]},<.>/?_'
+  _NAME_MAX_LENGTH = 12
+  _NAME_MIN_LENGTH = 2
+
+  def __init__(self, name):
+    self._name = name
+
+  def __str__(self):
+    return self._name
+  
+  def is_too_long(self):
+    return len(self._name) > self._NAME_MAX_LENGTH
+
+  def is_too_short(self):
+    return len(self._name) < self._NAME_MIN_LENGTH
+
+  @classmethod
+  def max_length(cls):
+    return cls._NAME_MAX_LENGTH
+
+  @classmethod
+  def min_length(cls):
+    return cls._NAME_MIN_LENGTH
+
+  def using_invalid_character(self):
+    for ch in unicode(self._name, 'UTF-8'):
+      if ch in self._INVALID_NAME_CHARACTER: return True
+    return False
 
 class Messages(object):
   def __init__(self):
