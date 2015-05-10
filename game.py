@@ -20,19 +20,20 @@ class Wall(Character):
   def walkable(self):
     return False
 
-
 class View(object):
   def __init__(self, character, on_map):
     self._character = character
     self._map = on_map
-    self._size = (15, 9)
+    self._size = (19, 9)
+    self._render_position = (5, 1)
 
   def render(self, screen):
     (cx, cy) = self._map.coordinate_of_character(self._character)
     w, h = self._size
     ox, oy = cx - (w/2), cy - (h/2)
+    rx, ry = self._render_position
     for px, py in [(x + ox, y + oy) for y in range(h) for x in range(w)]:
-      self._map.render_at((px, py), screen, (px - ox, py - oy))
+      self._map.render_at((px, py), screen, (px - ox + rx, py - oy + ry))
 
 class Map(object):
   dark = Terrain(' ', 'black')
