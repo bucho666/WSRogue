@@ -29,6 +29,9 @@ class Handler(object):
     self._view = View(character, self._map)
 
   def enter(self):
+    name = self._character.name()
+    self.send_message_all('"%s"がログインしました。' % name)
+    self.send_message('ようこそ %s。' % name)
     self._handlers[self._socket] = self
     self._map.put_character(self._character, self._map.random_open_coordinate())
     self.render_all()
@@ -54,11 +57,14 @@ class Handler(object):
 
   def receve_command(self, command):
     message = '%s: %s' % (self._character.name(), command)
-    for handler in self._handlers.values():
-      handler.send_message(message)
+    self.send_message_all(message)
 
   def send_message(self, message):
     self._messages.add(message)
+
+  def send_message_all(self, message):
+    for handler in self._handlers.values():
+      handler.send_message(message)
 
   def render(self):
     self._view.render(self._screen)
