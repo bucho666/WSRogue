@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from screen import Screen
-from game import Map
 from game import Character
-from game import Terrain
 from game import MapFile
 
 class Messages(object):

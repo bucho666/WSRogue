@@ -8,12 +8,8 @@ class Map(object):
     self._cell = [[Terrain('.', 'silver') for x in range(w)] for y in range(h)]
 
   def render(self, screen):
-    for y in range(len(self._cell)):
-      for x, cell in enumerate(self._cell[y]):
-        try:
-          cell.render(screen, (x, y))
-        except IndexError:
-          pass
+    for x, y in self.coordinates():
+      self._cell[y][x].render(screen, (x, y))
     for coord, character in self._character.items():
       character.render(screen, coord)
 
@@ -44,12 +40,12 @@ class Map(object):
     return self._cell[y][x].walkable()
 
   def random_open_coordinate(self):
-    opens = []
-    w, h = self.size()
-    for y in range(h):
-      for x in range(w):
-        if self.is_open((x, y)): opens.append((x, y))
+    opens = [c for c in self.coordinates() if self.is_open(c)]
     return random.choice(opens)
+
+  def coordinates(self):
+    w, h = self.size()
+    return [(x, y) for y in range(h) for x in range(w)]
 
   def size(self):
     return len(self._cell[0]), len(self._cell)
@@ -75,10 +71,10 @@ class Wall(Character):
 class MapFile(object):
   _terrain = {
     '.': Terrain('.', 'silver', '床'),
+    '=': Terrain('=', 'olive' , '橋'),
     '#': Wall('#', 'silver', '壁'),
     'T': Wall('T', 'green',  '木'),
     '~': Wall('~', 'blue' ,  '湖'),
-    '=': Terrain('=', 'olive' , '橋'),
   }
 
   @classmethod
@@ -86,7 +82,7 @@ class MapFile(object):
     symbol_map = [line.rstrip() for line in f]
     (h, w) = len(symbol_map), len(symbol_map[0])
     m = Map((w, h))
-    for y in range(h):
-      for x, s in enumerate(symbol_map[y]):
-        m.put_terrain(cls._terrain[s], (x, y))
+    for (x, y) in m.coordinates():
+      s = symbol_map[y][x]
+      m.put_terrain(cls._terrain[s], (x, y))
     return m

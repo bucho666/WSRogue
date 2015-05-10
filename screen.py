@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 class Screen(object):
   def __init__(self, size):
     self._size = size
