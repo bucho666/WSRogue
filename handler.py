@@ -21,10 +21,40 @@ class Handler(object):
   def attach(cls, socket):
     InputNameHandler(socket).enter()
 
+  def __init__(self):
+    self._messages = Messages()
+
+  def enter(self):
+    pass
+
+  def leave(self):
+    pass
+
+  def receve(self, data):
+    header, command = data.split(':', 1)
+    if header == 'k':
+      self.receve_key(chr(int(command)))
+    else:
+      self.receve_command(command)
+    self.render_all()
+
+  def render(self):
+    pass
+
+  def receve_key(self, key):
+    pass
+
+  def receve_command(self, command):
+    pass
+
+  def send_message(self, message):
+    self._messages.add(message)
+
+class GameHandler(Handler):
   def __init__(self, socket, character):
+    Handler.__init__(self)
     self._socket = socket
     self._screen = Screen((32, 12))
-    self._messages = Messages()
     self._character = character
     self._view = View(character, self._map)
 
@@ -41,14 +71,6 @@ class Handler(object):
     self._map.remove_character(self._character)
     self.render_all()
 
-  def receve(self, data):
-    header, command = data.split(':', 1)
-    if header == 'k':
-      self.receve_key(chr(int(command)))
-    else:
-      self.receve_command(command)
-    self.render_all()
-
   def receve_key(self, key):
     if key == 'l': self._map.move_character(self._character, ( 1,  0))
     if key == 'h': self._map.move_character(self._character, (-1,  0))
@@ -59,12 +81,10 @@ class Handler(object):
     message = '%s: %s' % (self._character.name(), command)
     self.send_message_all(message)
 
-  def send_message(self, message):
-    self._messages.add(message)
-
   def send_message_all(self, message):
     for handler in self._handlers.values():
-      handler.send_message(message)
+      if isinstance(handler, GameHandler):
+        handler.send_message(message)
 
   def render(self):
     self._view.render(self._screen)
@@ -73,8 +93,8 @@ class Handler(object):
 
 class InputNameHandler(Handler):
   def __init__(self, socket):
+    Handler.__init__(self)
     self._socket = socket
-    self._messages = Messages()
     self._character = Character('@', 'olive')
 
   def enter(self):
@@ -87,7 +107,7 @@ class InputNameHandler(Handler):
 
   def receve_command(self, command):
     c = Character('@', 'olive', command)
-    Handler(self._socket, c).enter()
+    GameHandler(self._socket, c).enter()
 
   def render(self):
     self._messages.flush(self._socket)
@@ -103,6 +123,3 @@ class Messages(object):
     for message in self._messages:
       socket.send('messageScreen:%s' % message)
     self._messages = []
-
-
-
