@@ -35,6 +35,8 @@ class Handler(object):
 
   def leave(self):
     del self._handlers[self._socket]
+    self._map.remove_character(self._character)
+    self.render_all()
 
   def receve(self, data):
     header, command = data.split(':', 1)

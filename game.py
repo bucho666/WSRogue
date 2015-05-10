@@ -46,6 +46,10 @@ class Map(object):
   def put_terrain(self, terrain, (x, y)):
     self._cell[y][x] = terrain
 
+  def remove_character(self, character):
+    pos = self.coordinate_of_character(character)
+    del self._character[pos]
+
   def move_character(self, character, direction):
     (x, y) = self.coordinate_of_character(character)
     (dx, dy) = direction
