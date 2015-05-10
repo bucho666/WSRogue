@@ -68,6 +68,7 @@ class GameHandler(Handler):
 
   def leave(self):
     del self._handlers[self._socket]
+    self.send_message_all('"%s"がログアウトしました。' % self._character.name())
     self._map.remove_character(self._character)
     self.render_all()
 
