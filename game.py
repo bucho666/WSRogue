@@ -6,13 +6,6 @@ class Character(Entity):
   def __init__(self, glyph, color, name='player'):
     Entity.__init__(self, glyph, color, name)
 
-class Terrain(Character):
-  def __init__(self, glyph, color, name='地形'):
-    Entity.__init__(self, glyph, color, name)
-
-  def walkable(self):
-    return True
-
 class Wall(Character):
   def __init__(self, glyph, color, name='壁'):
     Entity.__init__(self, glyph, color, name)
@@ -20,44 +13,32 @@ class Wall(Character):
   def walkable(self):
     return False
 
-class View(object):
-  def __init__(self, character, on_map):
-    self._character = character
-    self._map = on_map
-    self._size = (19, 9)
-    self._render_position = (5, 1)
+class Terrain(Character):
+  def __init__(self, glyph, color, name='地形'):
+    Entity.__init__(self, glyph, color, name)
 
-  def render(self, screen):
-    (cx, cy) = self._map.coordinate_of_character(self._character)
-    w, h = self._size
-    ox, oy = cx - (w/2), cy - (h/2)
-    rx, ry = self._render_position
-    for px, py in [(x + ox, y + oy) for y in range(h) for x in range(w)]:
-      self._map.render_at((px, py), screen, (px - ox + rx, py - oy + ry))
+  def walkable(self):
+    return True
 
 class Map(object):
   dark = Terrain(' ', 'black')
   def __init__(self, (w, h)):
     self._character = dict()
-    self._cell = [[Terrain('.', 'silver') for x in range(w)] for y in range(h)]
-
-  def render(self, screen):
-    for x, y in self.coordinates():
-      self._cell[y][x].render(screen, (x, y))
-    for coord, character in self._character.items():
-      character.render(screen, coord)
+    self._cell = [[None for x in range(w)] for y in range(h)]
 
   def render_at(self, coord, screen, to):
-    (x, y) = coord
-    if x < 0 or y < 0:
-      self.dark.render(screen, to)
-    else:
-      try:
-        self._cell[y][x].render(screen, to)
-      except IndexError:
-        self.dark.render(screen, to)
     if coord in self._character:
       self._character[coord].render(screen, to)
+      return
+    (x, y) = coord
+    if self.is_inside(coord):
+      self._cell[y][x].render(screen, to)
+    else:
+      self.dark.render(screen, to)
+
+  def is_inside(self, (x, y)):
+    w, h = self.size()
+    return x >= 0 and y >= 0 and x < w and y < h
 
   def put_character(self, character, pos):
     self._character[pos] = character
@@ -114,3 +95,18 @@ class MapFile(object):
       s = symbol_map[y][x]
       m.put_terrain(cls._terrain[s], (x, y))
     return m
+
+class View(object):
+  def __init__(self, character, on_map):
+    self._character = character
+    self._map = on_map
+    self._size = (19, 9)
+    self._render_position = (5, 1)
+
+  def render(self, screen):
+    (cx, cy) = self._map.coordinate_of_character(self._character)
+    w, h = self._size
+    ox, oy = cx - (w/2), cy - (h/2)
+    rx, ry = self._render_position
+    for px, py in [(x + ox, y + oy) for y in range(h) for x in range(w)]:
+      self._map.render_at((px, py), screen, (px - ox + rx, py - oy + ry))

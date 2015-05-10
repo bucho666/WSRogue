@@ -26,11 +26,11 @@ class Handler(object):
     self._screen = Screen((32, 12))
     self._messages = Messages()
     self._character = character
-    self._map.put_character(self._character, self._map.random_open_coordinate())
     self._view = View(character, self._map)
 
   def enter(self):
     self._handlers[self._socket] = self
+    self._map.put_character(self._character, self._map.random_open_coordinate())
     self.render_all()
 
   def leave(self):
