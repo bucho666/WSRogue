@@ -128,12 +128,20 @@ class Name(object):
   _NAME_MAX_LENGTH = 12
   _NAME_MIN_LENGTH = 2
 
+  # TODO register, unregister
+
   def __init__(self, name):
     self._name = name
 
   def __str__(self):
     return self._name
-  
+
+  def __hash__(self):
+    return self._name.__hash__()
+
+  def __eq__(self, other):
+    return self._name == str(other)
+
   def is_too_long(self):
     return len(self._name) > self._NAME_MAX_LENGTH
 
@@ -164,3 +172,23 @@ class Messages(object):
     for message in self._messages:
       socket.send('messageScreen:%s' % message)
     self._messages = []
+
+if __name__ == '__main__':
+  import unittest
+
+  class NameTest(unittest.TestCase):
+    def testNameHash(self):
+      a, b = Name('a'), Name('b')
+      d = { a:'A', b:'B' }
+      self.assertEqual(d[a], 'A')
+      self.assertEqual(d[b], 'B')
+      self.assertNotEqual(d[a], 'B')
+      self.assertNotEqual(d[b], 'A')
+
+    def testNameSet(self):
+      s = set([Name('a'), Name('b')])
+      self.assertTrue(Name('a') in s)
+      self.assertTrue(Name('b') in s)
+      self.assertFalse(Name('c') in s)
+
+  unittest.main()
