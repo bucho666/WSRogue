@@ -70,6 +70,7 @@ class GameHandler(Handler):
     del self._handlers[self._socket]
     self.send_message_all('"%s"がログアウトしました。' % self._character.name())
     self._map.remove_character(self._character)
+    self._character.unregister()
     self.render_all()
 
   def receve_key(self, key):
@@ -117,7 +118,11 @@ class InputNameHandler(Handler):
     if name.using_invalid_character():
       self.send_message('<font color="red">名前に記号や空白は使用できません。</font>')
       return False
+    if Character.find_by_name(name):
+      self.send_message('<font color="red">%sは既に使用されている名前です。</font>' % name)
+      return False
     c = Character('@', 'olive', name)
+    c.register()
     GameHandler(self._socket, c).enter()
 
   def render(self):
@@ -127,8 +132,6 @@ class Name(object):
   _INVALID_NAME_CHARACTER = u' 　!"#$%&\'()-=^~\\|@`[{;+:*]},<.>/?_'
   _NAME_MAX_LENGTH = 12
   _NAME_MIN_LENGTH = 2
-
-  # TODO register, unregister
 
   def __init__(self, name):
     self._name = name

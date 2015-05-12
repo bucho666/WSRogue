@@ -3,8 +3,22 @@ import random
 from entity import Entity
 
 class Character(Entity):
+  _list = set()
+
+  @classmethod
+  def find_by_name(cls, name):
+    result = [ch for ch in cls._list if ch.name() == name]
+    if not result: return None
+    return result[0]
+
   def __init__(self, glyph, color, name='player'):
     Entity.__init__(self, glyph, color, name)
+
+  def register(self):
+    self._list.add(self)
+
+  def unregister(self):
+    self._list.remove(self)
 
 class Wall(Character):
   def __init__(self, glyph, color, name='壁'):
@@ -114,3 +128,21 @@ class View(object):
     rx, ry = self._render_position
     for px, py in [(x + ox, y + oy) for y in range(h) for x in range(w)]:
       self._map.render_at((px, py), screen, (px - ox + rx, py - oy + ry))
+
+if __name__ == '__main__':
+  import unittest
+
+  class CharacterTest(unittest.TestCase):
+    def testFindByNameHit(self):
+      name = 'test_player'
+      ch = Character(None, None, name)
+      ch.register()
+      self.assertEqual(Character.find_by_name(name), ch)
+
+    def testFindByNameNotHit(self):
+      name = 'test_player'
+      ch = Character(None, None, name)
+      ch.register()
+      self.assertEqual(Character.find_by_name('unknown'), None)
+
+  unittest.main()
