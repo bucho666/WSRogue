@@ -28,7 +28,7 @@ class Handler(object):
     pass
 
   def leave(self):
-    pass
+    del self._handlers[self._socket]
 
   def receve(self, data):
     header, command = data.split(':', 1)
@@ -39,7 +39,7 @@ class Handler(object):
     self.render_all()
 
   def render(self):
-    pass
+    self._messages.flush(self._socket)
 
   def receve_key(self, key):
     pass
@@ -109,6 +109,8 @@ class InputNameHandler(Handler):
 
   def receve_command(self, command):
     name = Name(command)
+    self.send_message('<font color="silver">%s</font>' % name)
+    self.render()
     if name.is_too_long():
       self.send_message('<font color="red">名前は%dbyte以内です。</font>' % Name.max_length())
       return
@@ -123,10 +125,29 @@ class InputNameHandler(Handler):
       return False
     c = Character('@', 'olive', name)
     c.register()
-    GameHandler(self._socket, c).enter()
+    NameConfirmHandler(self._socket, c).enter()
 
-  def render(self):
-    self._messages.flush(self._socket)
+class NameConfirmHandler(Handler):
+  def __init__(self, socket, character):
+    Handler.__init__(self)
+    self._socket = socket
+    self._character = character
+
+  def enter(self):
+    self._handlers[self._socket] = self
+    self.send_message('<font color="yellow">%s でよろしいですか？(はい/いいえ)</font>' % self._character.name())
+    self.render()
+
+  def leave(self):
+    del self._handlers[self._socket]
+    self._character.unregister()
+
+  def receve_command(self, command):
+    if command == 'はい':
+      GameHandler(self._socket, self._character).enter()
+    elif command == 'いいえ':
+      self._character.unregister()
+      InputNameHandler(self._socket).enter()
 
 class Name(object):
   _INVALID_NAME_CHARACTER = u' 　!"#$%&\'()-=^~\\|@`[{;+:*]},<.>/?_'
